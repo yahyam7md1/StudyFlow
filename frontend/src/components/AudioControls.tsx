@@ -3,7 +3,7 @@ import { SoundType, audioControls, sounds } from '../utils/audio';
 
 const displayNames: Record<SoundType, string> = {
   rain: 'Rain Sounds 🌧️',
-  lofi: 'Lofi Beats 🎧',
+  piano: 'Calming Piano 🎧',
   jazz: 'Jazz Music 🎷'
 };
 

@@ -46,7 +46,10 @@ export default function Timer({ studyMins = 25, breakMins = 5, sessions = 4 }: T
 
   return (
     <div className="text-center">
-      <div className="text-6xl font-mono mb-4">
+      <div className="text-8xl font-bold bg-gradient-to-r 
+    from-purple-400 via-blue-300 to-blue-400 
+    bg-[length:200%_auto] animate-gradient 
+    bg-clip-text text-transparent">
         {formatTime(timeLeft)}
       </div>
       <div className="flex gap-4 justify-center">

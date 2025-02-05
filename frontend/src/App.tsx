@@ -7,7 +7,7 @@ import { SoundType } from './utils/audio'; // Add this import
 
 export default function App() {
   // Add explicit type declaration for SoundType
-  const [selectedSound, setSelectedSound] = useState<SoundType>('lofi');
+  const [selectedSound, setSelectedSound] = useState<SoundType>('rain');
   const [background, setBackground] = useState(getSavedBackground());
 
   const handleBackgroundChange = (bg: string) => {
@@ -31,7 +31,7 @@ export default function App() {
           🎧 Study Flow
         </h1>
         
-        <Timer studyMins={25} breakMins={5} sessions={4} />
+        <Timer studyMins={0.1} breakMins={0.1} sessions={4} />
         
         <AudioControls 
           selectedSound={selectedSound}
