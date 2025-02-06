@@ -26,12 +26,12 @@ export default function App() {
     >
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
       
-      <div className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96">
+      <div className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 space-y-8">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">
           🎧 Study Flow
         </h1>
         
-        <Timer studyMins={0.1} breakMins={0.1} sessions={4} />
+        <Timer studyMins={25} breakMins={5} sessions={4} />
         
         <AudioControls 
           selectedSound={selectedSound}

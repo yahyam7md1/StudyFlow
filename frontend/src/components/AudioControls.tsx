@@ -41,19 +41,21 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
             onClick={() => handleSoundChange(sound)}
             className={`px-4 py-2 rounded-lg ${
               selectedSound === sound
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-blue-500/5 backdrop-blur-lg border-2 border-blue-300/50 shadow-lg'
+                : 'bg-white/10 backdrop-blur-sm hover:bg-white/20 border-2 border-transparent'
             }`}
           >
             {displayNames[sound]}
           </button>
         ))}
       </div>
+      
 
       <div className="flex items-center gap-4">
         <button
           onClick={handlePlayToggle}
-          className="px-6 py-2 bg-green-600 rounded-lg text-white hover:bg-green-700"
+          className="px-8 py-4 bg-white/20 backdrop-blur-lg rounded-xl text-white 
+                     hover:bg-white/30 transition-all shadow-lg text-l"
         >
           {isPlaying ? '⏸️ Pause' : '▶️ Play'}
         </button>
