@@ -13,6 +13,24 @@ export const sounds = {
   jazz: new Howl({ src: ['/sounds/jazz.mp3'], loop: true }),
 };
 
+// Session completion sounds
+const sessionEndSound = new Howl({
+  src: ['/sounds/bell.mp3'],
+  volume: 0.8
+});
+
+const breakEndSound = new Howl({
+  src: ['/sounds/bell.mp3'],
+  volume: 0.8
+});
+
+
+export const playSessionEndAlert = () => sessionEndSound.play();
+export const playBreakEndAlert = () => breakEndSound.play();
+
+
+
+
 export type SoundType = keyof typeof sounds;
 
 export const audioControls = {

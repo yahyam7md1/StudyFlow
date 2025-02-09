@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
+import { playBreakEndAlert, playSessionEndAlert} from '../utils/audio'; // Add this import
+
 
 type TimerProps = {
   studyMins?: number;
@@ -25,6 +27,13 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         setTimeLeft(prev => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
+      // Play appropriate completion sound
+      if (isStudyTime) {
+        playSessionEndAlert(); // Study session finished
+      } else {
+        playBreakEndAlert(); // Break finished
+      }
+  
       if (currentSession >= sessions) {
         resetTimer();
         return;
@@ -34,7 +43,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       setCurrentSession(prev => (isStudyTime ? prev + 1 : prev));
       setTimeLeft(isStudyTime ? breakMins * 60 : studyMins * 60);
     }
-
+  
     return () => window.clearInterval(interval);
   }, [isActive, timeLeft, isStudyTime, currentSession, sessions, resetTimer]);
 
