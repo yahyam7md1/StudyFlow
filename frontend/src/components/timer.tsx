@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { playBreakEndAlert, playSessionEndAlert} from '../utils/audio'; // Add this import
-
+import { playBreakEndAlert, playSessionEndAlert } from '../utils/audio';
 
 type TimerProps = {
   studyMins?: number;
@@ -13,11 +12,22 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentSession, setCurrentSession] = useState(1);
   const [isStudyTime, setIsStudyTime] = useState(true);
+  const [isLongBreak, setIsLongBreak] = useState(false);
+
+  const startLongBreak = useCallback(() => {
+    setIsLongBreak(true);
+    setTimeLeft(1800); // 30 minutes in seconds (30 * 60)
+    setIsStudyTime(false);
+    setIsActive(true);
+  }, []);
 
   const resetTimer = useCallback(() => {
     setIsActive(false);
-    setTimeLeft(isStudyTime ? studyMins * 60 : breakMins * 60);
-  }, [isStudyTime, studyMins, breakMins, sessions]);
+    setIsLongBreak(false);
+    setCurrentSession(1);
+    setIsStudyTime(true);
+    setTimeLeft(studyMins * 60);
+  }, [studyMins]);
 
   useEffect(() => {
     let interval: number;
@@ -27,31 +37,72 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         setTimeLeft(prev => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      // Play appropriate completion sound
-      if (isStudyTime) {
-        playSessionEndAlert(); // Study session finished
-      } else {
-        playBreakEndAlert(); // Break finished
-      }
-  
-      if (currentSession >= sessions) {
-        resetTimer();
+      if (isLongBreak) {
+        window.location.reload();
         return;
       }
-      
-      setIsStudyTime(!isStudyTime);
-      setCurrentSession(prev => (isStudyTime ? prev + 1 : prev));
-      setTimeLeft(isStudyTime ? breakMins * 60 : studyMins * 60);
-    }
-  
-    return () => window.clearInterval(interval);
-  }, [isActive, timeLeft, isStudyTime, currentSession, sessions, resetTimer]);
 
+      if (isStudyTime) {
+        // Only play session end alert for non-final sessions
+        if (currentSession < sessions) playSessionEndAlert();
+        
+        // Check if this was the final session
+        if (currentSession >= sessions) {
+          startLongBreak();
+          return;
+        }
+
+        // Regular session completion
+        setIsStudyTime(false);
+        setTimeLeft(breakMins * 60);
+      } else {
+        // Break completion (only for non-final breaks)
+        playBreakEndAlert();
+        setIsStudyTime(true);
+        setCurrentSession(prev => prev + 1);
+        setTimeLeft(studyMins * 60);
+      }
+    }
+
+    return () => window.clearInterval(interval);
+  }, [isActive, timeLeft, isStudyTime, currentSession, sessions, resetTimer, isLongBreak, startLongBreak, breakMins, studyMins]);
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  if (isLongBreak) {
+    return (
+      <div className="text-center space-y-8">
+        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl">
+          <h2 className="text-3xl font-bold text-green-400 mb-4">
+            🎉 Well Done! 🎉
+          </h2>
+          <p className="text-white/90 mb-6 text-lg">
+            You completed all {sessions} sessions!<br />
+            Enjoy a 30-minute break!
+          </p>
+          
+          <div className="text-6xl font-mono text-white/90 mb-6">
+            {formatTime(timeLeft)}
+          </div>
+          
+          <button
+            onClick={resetTimer}
+            className="px-6 py-3 bg-white/20 rounded-lg text-white
+              hover:bg-white/30 transition-all shadow-md"
+          >
+            ⏹️ End Break Early
+          </button>
+          
+          <p className="mt-6 text-sm text-white/70">
+            Page will refresh automatically when break ends
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center space-y-6">
@@ -103,4 +154,5 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     </div>
   );
 };
+
 export default Timer;
