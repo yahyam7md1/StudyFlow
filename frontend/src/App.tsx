@@ -4,6 +4,7 @@ import AudioControls from './components/AudioControls';
 import BackgroundSelector from './components/BackgroundSelector';
 import { getSavedBackground, saveBackground } from './utils/storage';
 import { SoundType } from './utils/audio'; // Add this import
+import Clock from './components/Clock';
 
 export default function App() {
   // Add explicit type declaration for SoundType
@@ -16,6 +17,7 @@ export default function App() {
   };
 
   return (
+    
     <div 
       className="min-h-screen flex items-center justify-center transition-all duration-500"
       style={{ 
@@ -24,8 +26,9 @@ export default function App() {
         backgroundPosition: 'center'
       }}
     >
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
       
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+      <Clock />
       <div className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 space-y-8">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">
           🎧 Study Flow
