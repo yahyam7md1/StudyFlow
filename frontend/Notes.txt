@@ -1,0 +1,8 @@
+1- when you are in a session, lets say you are in your first break, then you didnt take the break exactly when it happened
+so you want to reset it, so it start from the begininng, now when i did that it restarted the whole thing and even took me
+out from the session, therefore, i want to fix it in the following way:
+when i press reset, it should take me to sub window or smth, that asks me do you want to reset eveything form the begininng?
+or reset the current session whateher its a break or focus time
+
+
+2-

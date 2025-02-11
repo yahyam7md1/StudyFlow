@@ -13,20 +13,28 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   const [currentSession, setCurrentSession] = useState(1);
   const [isStudyTime, setIsStudyTime] = useState(true);
   const [isLongBreak, setIsLongBreak] = useState(false);
+  const [showResetOptions, setShowResetOptions] = useState(false);
 
   const startLongBreak = useCallback(() => {
     setIsLongBreak(true);
-    setTimeLeft(1800); // 30 minutes in seconds (30 * 60)
+    setTimeLeft(1800);
     setIsStudyTime(false);
     setIsActive(true);
   }, []);
 
-  const resetTimer = useCallback(() => {
+  const resetCurrentSession = useCallback(() => {
+    setIsActive(false);
+    setTimeLeft(isStudyTime ? studyMins * 60 : breakMins * 60);
+    setShowResetOptions(false);
+  }, [isStudyTime, studyMins, breakMins]);
+
+  const resetEverything = useCallback(() => {
     setIsActive(false);
     setIsLongBreak(false);
     setCurrentSession(1);
     setIsStudyTime(true);
     setTimeLeft(studyMins * 60);
+    setShowResetOptions(false);
   }, [studyMins]);
 
   useEffect(() => {
@@ -43,20 +51,16 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       }
 
       if (isStudyTime) {
-        // Only play session end alert for non-final sessions
         if (currentSession < sessions) playSessionEndAlert();
         
-        // Check if this was the final session
         if (currentSession >= sessions) {
           startLongBreak();
           return;
         }
 
-        // Regular session completion
         setIsStudyTime(false);
         setTimeLeft(breakMins * 60);
       } else {
-        // Break completion (only for non-final breaks)
         playBreakEndAlert();
         setIsStudyTime(true);
         setCurrentSession(prev => prev + 1);
@@ -65,7 +69,8 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     }
 
     return () => window.clearInterval(interval);
-  }, [isActive, timeLeft, isStudyTime, currentSession, sessions, resetTimer, isLongBreak, startLongBreak, breakMins, studyMins]);
+  }, [isActive, timeLeft, isStudyTime, currentSession, sessions, isLongBreak, startLongBreak, breakMins, studyMins]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -75,7 +80,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   if (isLongBreak) {
     return (
       <div className="text-center space-y-8">
-        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl">
+        <div className="bg-black/90 p-8 rounded-2xl shadow-xl border border-white/20">
           <h2 className="text-3xl font-bold text-green-400 mb-4">
             🎉 Well Done! 🎉
           </h2>
@@ -89,7 +94,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
           </div>
           
           <button
-            onClick={resetTimer}
+            onClick={resetEverything}
             className="px-6 py-3 bg-white/20 rounded-lg text-white
               hover:bg-white/30 transition-all shadow-md"
           >
@@ -105,7 +110,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   }
 
   return (
-    <div className="text-center space-y-6">
+    <div className="text-center space-y-6 relative">
       {/* Timer Display */}
       <div className="text-8xl font-bold bg-gradient-to-r 
         from-purple-400 via-pink-300 to-blue-400 
@@ -143,7 +148,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         </button>
         
         <button
-          onClick={resetTimer}
+          onClick={() => setShowResetOptions(true)}
           className="px-8 py-4 bg-white/10 backdrop-blur-sm rounded-xl text-white 
             border-2 border-transparent hover:bg-white/20 transition-all
             hover:border-white/30 shadow-md"
@@ -151,6 +156,47 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
           🔄 Reset
         </button>
       </div>
+
+      {/* Reset Options Modal */}
+      {showResetOptions && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+          <div className="bg-black/90 p-6 rounded-xl space-y-4 w-80 border border-white/20">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl text-white/90">Reset Options</h3>
+              <button
+                onClick={() => setShowResetOptions(false)}
+                className="text-white/70 hover:text-white text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <button
+              onClick={resetCurrentSession}
+              className="w-full px-6 py-3 bg-emerald-500/90 rounded-lg text-white
+                hover:bg-emerald-600 transition-all border border-emerald-300"
+            >
+              Reset Current Session ({isStudyTime ? 'Focus' : 'Break'})
+            </button>
+            
+            <button
+              onClick={resetEverything}
+              className="w-full px-6 py-3 bg-red-500/90 rounded-lg text-white
+                hover:bg-red-600 transition-all border border-red-300"
+            >
+              Reset Everything
+            </button>
+            
+            <button
+              onClick={() => setShowResetOptions(false)}
+              className="w-full px-6 py-3 bg-white/10 rounded-lg text-white
+                hover:bg-white/20 transition-all border border-white/20"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
