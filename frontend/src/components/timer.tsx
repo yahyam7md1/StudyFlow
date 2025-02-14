@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { playBreakEndAlert, playSessionEndAlert } from '../utils/audio';
+import { AnimatePresence, motion } from 'framer-motion';
 
 type TimerProps = {
   studyMins?: number;
@@ -158,45 +159,104 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       </div>
 
       {/* Reset Options Modal */}
-      {showResetOptions && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
-          <div className="bg-black/90 p-6 rounded-xl space-y-4 w-80 border border-white/20">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl text-white/90">Reset Options</h3>
-              <button
-                onClick={() => setShowResetOptions(false)}
-                className="text-white/70 hover:text-white text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            
-            <button
-              onClick={resetCurrentSession}
-              className="w-full px-6 py-3 bg-emerald-500/90 rounded-lg text-white
-                hover:bg-emerald-600 transition-all border border-emerald-300"
-            >
-              Reset Current Session ({isStudyTime ? 'Focus' : 'Break'})
-            </button>
-            
-            <button
-              onClick={resetEverything}
-              className="w-full px-6 py-3 bg-red-500/90 rounded-lg text-white
-                hover:bg-red-600 transition-all border border-red-300"
-            >
-              Reset Everything
-            </button>
-            
-            <button
-              onClick={() => setShowResetOptions(false)}
-              className="w-full px-6 py-3 bg-white/10 rounded-lg text-white
-                hover:bg-white/20 transition-all border border-white/20"
-            >
-              Cancel
-            </button>
-          </div>
+      <AnimatePresence>
+  {showResetOptions && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50"
+    >
+      <motion.div
+        initial={{ scale: 0.95, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.95, y: -20 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+        className="bg-white/10 backdrop-blur-lg p-6 rounded-xl space-y-4 w-80 border border-white/20 shadow-2xl"
+      >
+        <div className="flex justify-between items-center mb-4">
+          <motion.h3 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-bold"
+          >
+            Reset Options
+          </motion.h3>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowResetOptions(false)}
+            className="text-white/70 hover:text-white text-2xl"
+          >
+            ×
+          </motion.button>
         </div>
-      )}
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-3"
+        >
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={resetCurrentSession}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-500/90 to-purple-500/90 rounded-lg text-white
+              hover:from-blue-600 hover:to-purple-600 transition-all font-semibold shadow-lg"
+          >
+            Reset Current Session
+            <span className="block text-sm text-white/70 mt-1">
+              ({isStudyTime ? 'Focus' : 'Break'})
+            </span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={resetEverything}
+            className="w-full px-6 py-3 bg-gradient-to-r from-red-500/90 to-pink-500/90 rounded-lg text-white
+              hover:from-red-600 hover:to-pink-600 transition-all font-semibold shadow-lg"
+          >
+            Reset Everything
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowResetOptions(false)}
+            className="w-full px-6 py-3 bg-white/10 rounded-lg text-white
+              hover:bg-white/20 transition-all border border-white/20"
+          >
+            Cancel
+          </motion.button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center gap-2 mt-4"
+        >
+          {['from-blue-400', 'from-purple-400', 'from-pink-400'].map((color) => (
+            <motion.div
+              key={color}
+              className={`h-1 w-8 bg-gradient-to-r ${color} to-white/20 rounded-full`}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.6, 1, 0.6]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </div>
   );
 };
