@@ -51,10 +51,13 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         return;
       }
 
+      
+
       if (isStudyTime) {
         if (currentSession < sessions) playSessionEndAlert();
         
         if (currentSession >= sessions) {
+          playSessionEndAlert();
           startLongBreak();
           return;
         }
@@ -81,7 +84,11 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   if (isLongBreak) {
     return (
       <div className="text-center space-y-8">
-        <div className="bg-black/90 p-8 rounded-2xl shadow-xl border border-white/20">
+        <div className="font-bold bg-gradient-to-r 
+        from-purple-400 via-pink-300 to-blue-400 
+        animate-gradient bg-gradien-stretch
+        bg-clip-text text-transparent
+        drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
           <h2 className="text-3xl font-bold text-green-400 mb-4">
             🎉 Well Done! 🎉
           </h2>
@@ -90,17 +97,21 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
             Enjoy a 30-minute break!
           </p>
           
-          <div className="text-6xl font-mono text-white/90 mb-6">
+          <div className="text-7xl font-mono text-white/90 mb-6">
             {formatTime(timeLeft)}
+            {timeLeft === 0 && playSessionEndAlert()}
           </div>
           
           <button
-            onClick={resetEverything}
-            className="px-6 py-3 bg-white/20 rounded-lg text-white
-              hover:bg-white/30 transition-all shadow-md"
-          >
-            ⏹️ End Break Early
-          </button>
+           onClick={() => {
+              playSessionEndAlert();
+              resetEverything();
+               }}
+              className="px-6 py-3 bg-white/20 rounded-lg text-white
+               hover:bg-white/30 transition-all shadow-md"
+                >
+             ⏹️ End Break Early
+              </button>
           
           <p className="mt-6 text-sm text-white/70">
             Page will refresh automatically when break ends
