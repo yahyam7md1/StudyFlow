@@ -51,8 +51,6 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         return;
       }
 
-      
-
       if (isStudyTime) {
         if (currentSession < sessions) playSessionEndAlert();
         
@@ -81,43 +79,94 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const longBreakVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { 
+        type: 'spring', 
+        stiffness: 100,
+        damping: 20,
+        staggerChildren: 0.1
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      y: -50, 
+      scale: 0.9,
+      transition: { duration: 0.2 } 
+    }
+  };
+
+  const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   if (isLongBreak) {
     return (
-      <div className="text-center space-y-8">
-        <div className="font-bold bg-gradient-to-r 
-        from-purple-400 via-pink-300 to-blue-400 
-        animate-gradient bg-gradien-stretch
-        bg-clip-text text-transparent
-        drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
-          <h2 className="text-3xl font-bold text-green-400 mb-4">
-            🎉 Well Done! 🎉
-          </h2>
-          <p className="text-white/90 mb-6 text-lg">
-            You completed all {sessions} sessions!<br />
-            Enjoy a 30-minute break!
-          </p>
-          
-          <div className="text-7xl font-mono text-white/90 mb-6">
-            {formatTime(timeLeft)}
-            {timeLeft === 0 && playSessionEndAlert()}
-          </div>
-          
-          <button
-           onClick={() => {
-              playSessionEndAlert();
-              resetEverything();
-               }}
+      <AnimatePresence mode='wait'>
+        <motion.div
+          key="long-break"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={longBreakVariants}
+          className="text-center space-y-8"
+        >
+          <div className="font-bold bg-gradient-to-r 
+            from-purple-400 via-pink-300 to-blue-400 
+            animate-gradient bg-clip-text text-transparent
+            drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+            
+            <motion.h2 
+              variants={childVariants}
+              className="text-3xl font-bold text-green-400 mb-4"
+            >
+              🎉 Well Done! 🎉
+            </motion.h2>
+            
+            <motion.p 
+              variants={childVariants}
+              className="text-white/90 mb-6 text-lg"
+            >
+              You completed all {sessions} sessions!<br />
+              Enjoy a 30-minute break!
+            </motion.p>
+            
+            <motion.div 
+              variants={childVariants}
+              className="text-7xl font-mono text-white/90 mb-6"
+            >
+              {formatTime(timeLeft)}
+              {timeLeft === 0 && playSessionEndAlert()}
+            </motion.div>
+            
+            <motion.button
+              variants={childVariants}
+              onClick={() => {
+                playSessionEndAlert();
+                resetEverything();
+              }}
               className="px-6 py-3 bg-white/20 rounded-lg text-white
-               hover:bg-white/30 transition-all shadow-md"
-                >
-             ⏹️ End Break Early
-              </button>
-          
-          <p className="mt-6 text-sm text-white/70">
-            Page will refresh automatically when break ends
-          </p>
-        </div>
-      </div>
+                hover:bg-white/30 transition-all shadow-md"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ⏹️ End Break Early
+            </motion.button>
+            
+            <motion.p 
+              variants={childVariants}
+              className="mt-6 text-sm text-white/70"
+            >
+              Page will refresh automatically when break ends
+            </motion.p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     );
   }
 
