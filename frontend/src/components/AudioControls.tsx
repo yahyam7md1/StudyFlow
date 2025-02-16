@@ -60,20 +60,33 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
           {isPlaying ? '⏸️ Pause' : '▶️ Play'}
         </button>
 
-        <div className="flex items-center gap-2 text-white">
-          <span className="text-sm">🔊 Volume:</span>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="w-32 accent-blue-500"
-          />
-          <span className="text-sm w-8">{(volume * 100).toFixed(0)}%</span>
-        </div>
-      </div>
+        <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-full pl-4 pr-3 py-2">
+    <span className="text-sm text-white/80">🔊</span>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value={volume}
+      onChange={(e) => setVolume(parseFloat(e.target.value))}
+      className="w-32 h-2 bg-white/20 rounded-full appearance-none 
+               [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
+               [&::-webkit-slider-thumb]:appearance-none
+               [&::-webkit-slider-thumb]:bg-white
+               [&::-webkit-slider-thumb]:rounded-full
+               [&::-webkit-slider-thumb]:shadow-lg
+               [&::-webkit-slider-thumb]:transition-all
+               [&::-webkit-slider-thumb]:hover:scale-125
+               [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4
+               [&::-moz-range-thumb]:bg-white
+               [&::-moz-range-thumb]:rounded-full
+               [&::-moz-range-thumb]:border-none"
+    />
+    <span className="text-sm font-medium w-8 text-white/90">
+      {(volume * 100).toFixed(0)}%
+    </span>
+  </div>
+    </div>
     </div>
   );
 }

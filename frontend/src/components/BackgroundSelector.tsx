@@ -16,10 +16,10 @@ export default function BackgroundSelector({ currentBackground, onSelect }: Prop
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-2 right-4 z-50">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 bg-white/70 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
+        className="p-2 bg-white/39 backdrop-blur-sm rounded-full shadow-lg hover:bg-white/30 transition-all"
       >
         🖼️
       </button>
