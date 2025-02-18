@@ -58,7 +58,7 @@ export default function BackgroundSelector({ currentBackground, onSelect }: Prop
       onClick={() => setIsOpen(true)}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="p-2 bg-white/70 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
+      className="p-2 bg-white/39 backdrop-blur-sm rounded-full shadow-lg hover:bg-white/30 transition-all"
       >
         🖼️
       </motion.button>
