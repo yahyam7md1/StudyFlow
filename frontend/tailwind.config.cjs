@@ -13,6 +13,9 @@ module.exports = {
           '0%, 100%': { 'background-position': '0% 50%' },
           '50%': { 'background-position': '100% 50%' },
         },
+      },backdropBlur: {
+        sm: '4px',
+        lg: '16px',
       },
     },
   },

@@ -6,6 +6,7 @@ import { getSavedBackground, saveBackground } from './utils/storage';
 import { SoundType } from './utils/audio'; // Add this import
 import Clock from './components/Clock';
 import Onboarding from './components/Onboarding';
+import ToDoList from './components/ToDoList';
 
 export default function App() {
   // Add explicit type declaration for SoundType
@@ -35,7 +36,6 @@ export default function App() {
       {showOnboarding ? (
         <Onboarding onComplete={() => setShowOnboarding(false)} />
       ) : (
-
       
       
       <div className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 space-y-8">
@@ -49,12 +49,14 @@ export default function App() {
           selectedSound={selectedSound}
           onSoundChange={(sound: SoundType) => setSelectedSound(sound)}
         />
+        
 
         <BackgroundSelector 
           currentBackground={background}
           onSelect={handleBackgroundChange}
           
         />
+        <ToDoList />
       </div>
       )}
     </div>
