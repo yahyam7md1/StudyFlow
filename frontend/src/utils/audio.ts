@@ -9,7 +9,7 @@ let activeSound: ActiveSound | null = null;
 
 export const sounds = {
   rain: new Howl({ src: ['/sounds/rain.mp3'], loop: true }),
-  piano: new Howl({ src: ['/sounds/piano.mp3'], loop: true }),
+  lofi: new Howl({ src: ['/sounds/lofi.mp3'], loop: true }),
   jazz: new Howl({ src: ['/sounds/jazz.mp3'], loop: true }),
 };
 

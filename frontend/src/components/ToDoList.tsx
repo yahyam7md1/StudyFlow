@@ -50,7 +50,7 @@ const TodoList = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <List className="text-white w-6 h-6" />
+        <List className="text-white w-6 h-6 z-50" />
       </motion.button>
 
       {/* Main Todo Overlay */}
