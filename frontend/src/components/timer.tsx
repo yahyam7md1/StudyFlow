@@ -40,10 +40,16 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
 
   const skipToNextSession = useCallback(() => {
     if (isStudyTime) {
-      // Skip from study to break time
-      playSessionEndAlert();
-      setIsStudyTime(false);
-      setTimeLeft(breakMins * 60);
+      // If this is the last session and we're in study time, skip directly to long break
+      if (currentSession >= sessions) {
+        playSessionEndAlert();
+        startLongBreak();
+      } else {
+        // Otherwise, skip from study to break time as usual
+        playSessionEndAlert();
+        setIsStudyTime(false);
+        setTimeLeft(breakMins * 60);
+      }
     } else {
       // Skip from break to the next study session or long break
       playBreakEndAlert();
@@ -289,7 +295,9 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
           >
             Skip to Next Session
             <span className="block text-sm text-white/70 mt-1">
-              {isStudyTime ? `Focus → Break` : currentSession < sessions ? `Break → Session ${currentSession + 1}` : `Break → Long Break`}
+              {isStudyTime 
+                ? (currentSession >= sessions ? `Focus → Long Break` : `Focus → Break`) 
+                : (currentSession < sessions ? `Break → Session ${currentSession + 1}` : `Break → Long Break`)}
             </span>
           </motion.button>
 
