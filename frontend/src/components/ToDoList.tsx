@@ -45,7 +45,7 @@ const TodoList = () => {
       {/* Trigger Button */}
       <motion.button
         onClick={() => setShowTodo(true)}
-        className="fixed bottom-2.5 right-14 z-50 p-1.5 bg-white/20 backdrop-blur-sm rounded-full
+        className="fixed bottom-2.5 right-14 z-1 p-1.5 bg-white/20 backdrop-blur-sm rounded-full
                  shadow-lg hover:bg-white/30 transition-all border-2 border-white/20"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
