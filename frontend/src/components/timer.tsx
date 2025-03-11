@@ -38,6 +38,28 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     setShowResetOptions(false);
   }, [studyMins]);
 
+  const skipToNextSession = useCallback(() => {
+    if (isStudyTime) {
+      // Skip from study to break time
+      playSessionEndAlert();
+      setIsStudyTime(false);
+      setTimeLeft(breakMins * 60);
+    } else {
+      // Skip from break to the next study session or long break
+      playBreakEndAlert();
+      if (currentSession >= sessions) {
+        // If this was the last session's break, go to long break
+        startLongBreak();
+      } else {
+        // Go to the next study session
+        setIsStudyTime(true);
+        setCurrentSession(prev => prev + 1);
+        setTimeLeft(studyMins * 60);
+      }
+    }
+    setShowResetOptions(false);
+  }, [isStudyTime, currentSession, sessions, breakMins, studyMins, startLongBreak]);
+
   useEffect(() => {
     let interval: number;
     
@@ -258,6 +280,19 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
           transition={{ delay: 0.2 }}
           className="space-y-3"
         >
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={skipToNextSession}
+            className="w-full px-6 py-3 bg-gradient-to-r from-amber-500/90 to-orange-500/90 rounded-lg text-white
+              hover:from-amber-600 hover:to-orange-600 transition-all font-semibold shadow-lg"
+          >
+            Skip to Next Session
+            <span className="block text-sm text-white/70 mt-1">
+              {isStudyTime ? `Focus → Break` : currentSession < sessions ? `Break → Session ${currentSession + 1}` : `Break → Long Break`}
+            </span>
+          </motion.button>
+
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
