@@ -8,9 +8,9 @@ type ActiveSound = {
 let activeSound: ActiveSound | null = null;
 
 export const sounds = {
-  rain: new Howl({ src: ['./sounds/rain.mp3'], loop: true }),
-  lofi: new Howl({ src: ['./sounds/lofi.mp3'], loop: true }),
-  jazz: new Howl({ src: ['./sounds/jazz.mp3'], loop: true }),
+  rain: new Howl({ src: ['https://yahyam7md1.github.io/StudyFlow/sounds/rain.mp3'], loop: true }),
+lofi: new Howl({ src: ['https://yahyam7md1.github.io/StudyFlow/sounds/lofi.mp3'], loop: true }),
+jazz: new Howl({ src: ['https://yahyam7md1.github.io/StudyFlow/sounds/jazz.mp3'], loop: true }),
 };
 
 // Session completion sounds
