@@ -31,14 +31,14 @@ const Onboarding = ({ onComplete }: { onComplete: () => void }) => {
                    animate = {{ opacity : 1, y: 0 }}
                      exit = {{ opacity : 0, y: -20 }}
                      transition = {{ duration : 0.3 }}
-                     className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-2xl w-full border border-white/20 shadow-xl"
+                     className="onboarding-container"
                 >
                     <div className = "text-center space-y-6">
-                        <h1 className ="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className ="onboarding-title text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                             {steps[step].title}
                         </h1>
 
-                        <p className = "text-white/80 text-lg leading-relaxed">
+                        <p className = "onboarding-content text-white/80 text-lg leading-relaxed">
                             {steps[step].content}
                         </p>
 

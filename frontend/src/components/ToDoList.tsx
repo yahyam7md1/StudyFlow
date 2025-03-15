@@ -46,7 +46,7 @@ const TodoList = () => {
       <motion.button
         onClick={() => setShowTodo(true)}
         className="fixed bottom-2.5 right-14 z-1 p-1.5 bg-white/20 backdrop-blur-sm rounded-full
-                 shadow-lg hover:bg-white/30 transition-all border-2 border-white/20"
+                 shadow-lg hover:bg-white/30 transition-all border-2 border-white/20 todo-list-button"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -68,8 +68,7 @@ const TodoList = () => {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="w-[60vw] min-h-[50vh] bg-gradient-to-br from-gray-900 to-gray-800
-                        rounded-xl shadow-2xl border border-white/10 overflow-hidden"
+              className="todo-container"
             >
               {/* Header */}
               <div className="p-6 border-b border-white/10">

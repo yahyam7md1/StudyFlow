@@ -23,22 +23,20 @@ export default function App() {
   return (
     
     <div 
-      className="min-h-screen flex items-center justify-center transition-all duration-500"
+      className="min-h-screen flex items-center justify-center transition-all duration-500 page-background"
       style={{ 
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundImage: `url(${background})`
       }}
     >
       
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+      <div className="absolute inset-0 backdrop-blur-sm backdrop-overlay" />
       <Clock />
       {showOnboarding ? (
         <Onboarding onComplete={() => setShowOnboarding(false)} />
       ) : (
       
       
-      <div className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 space-y-8">
+      <div className="main-container">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">
           🎧 Study Flow
         </h1>

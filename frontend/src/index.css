@@ -10,4 +10,187 @@
     }
   }
 
+/* Responsive design utilities */
+@layer components {
+  .main-container {
+    @apply relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 space-y-8;
+  }
+
+  .todo-container {
+    @apply w-[60vw] min-h-[50vh] bg-gradient-to-br from-gray-900 to-gray-800
+           rounded-xl shadow-2xl border border-white/10 overflow-hidden;
+  }
+
+  .onboarding-container {
+    @apply bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-2xl w-full border border-white/20 shadow-xl;
+  }
+
+  .bg-selector-container {
+    @apply mt-2 p-4 bg-black/90 backdrop-blur-sm rounded-xl shadow-xl;
+  }
+
+  .bg-selector-grid {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  .bg-preview {
+    @apply relative h-20 w-32 rounded-lg overflow-hidden border-2 transition-all;
+  }
+
+  .audio-controls {
+    @apply space-y-4;
+  }
+
+  .audio-buttons {
+    @apply flex gap-4 justify-center;
+  }
+
+  .audio-button {
+    @apply px-4 py-2 rounded-lg;
+  }
+  
+  /* Clock component styling */
+  .clock-container {
+    @apply fixed top-4 left-4 text-white/80 backdrop-blur-sm bg-white/10 rounded-lg p-4 shadow-md;
+  }
+  
+  .clock-time {
+    @apply text-2xl font-mono font-medium;
+  }
+  
+  .clock-date {
+    @apply text-sm mt-1;
+  }
+
+  /* Page background for all screen sizes */
+  .page-background {
+    @apply bg-no-repeat bg-cover bg-center;
+    background-size: cover !important; 
+    background-position: center !important;
+  }
+  
+  .backdrop-overlay {
+    @apply bg-black/30;
+  }
+
+  /* Mobile-first responsive design */
+  @media (max-width: 640px) {
+    .main-container {
+      @apply w-[90vw] p-4 space-y-4;
+    }
+    
+    .todo-container {
+      @apply w-[90vw] min-h-[70vh];
+    }
+    
+    /* Timer adjustments for mobile */
+    .timer-display {
+      @apply text-6xl !important;
+    }
+    
+    /* Control buttons adjustments */
+    .control-buttons {
+      @apply flex-col gap-2;
+    }
+    
+    .control-button {
+      @apply w-full;
+    }
+    
+    /* Onboarding adjustments */
+    .onboarding-container {
+      @apply p-4;
+    }
+    
+    .onboarding-title {
+      @apply text-3xl;
+    }
+    
+    .onboarding-content {
+      @apply text-base;
+    }
+    
+    /* Background selector adjustments */
+    .bg-selector-container {
+      @apply p-2;
+    }
+    
+    .bg-selector-grid {
+      @apply grid-cols-1;
+    }
+    
+    .bg-preview {
+      @apply w-full h-24;
+    }
+    
+    /* Audio controls adjustments */
+    .audio-buttons {
+      @apply flex-col gap-2;
+    }
+    
+    .audio-button {
+      @apply w-full text-sm;
+    }
+    
+    /* Audio control layout for mobile */
+    .audio-controls > div:nth-child(2) {
+      @apply flex-col items-start;
+    }
+    
+    /* Todo list button position adjustment for mobile */
+    .todo-list-button {
+      @apply bottom-16 right-4;
+    }
+    
+    /* Clock adjustments for mobile */
+    .clock-container {
+      @apply top-2 left-2 p-2 text-white/70;
+      transform: scale(0.8);
+      transform-origin: top left;
+    }
+    
+    .clock-time {
+      @apply text-lg;
+    }
+    
+    .clock-date {
+      @apply text-xs;
+    }
+    
+    /* Enhanced background for mobile */
+    .backdrop-overlay {
+      @apply bg-black/50;
+    }
+  }
+  
+  /* Tablet responsive design */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .main-container {
+      @apply w-[80vw] max-w-lg;
+    }
+    
+    .todo-container {
+      @apply w-[80vw] max-w-2xl;
+    }
+    
+    /* Clock adjustments for tablet */
+    .clock-container {
+      @apply top-3 left-3 p-3;
+      transform: scale(0.9);
+      transform-origin: top left;
+    }
+  }
+  
+  /* Larger screens */
+  @media (min-width: 1025px) {
+    .main-container {
+      @apply w-96;
+    }
+    
+    .todo-container {
+      @apply w-[60vw] max-w-3xl;
+    }
+  }
+}
+
   

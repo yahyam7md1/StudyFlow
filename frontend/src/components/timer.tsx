@@ -201,7 +201,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   return (
     <div className="text-center space-y-6 relative">
       {/* Timer Display */}
-      <div className="text-8xl font-bold bg-gradient-to-r 
+      <div className="timer-display text-8xl font-bold bg-gradient-to-r 
         from-purple-400 via-pink-300 to-blue-400 
         animate-gradient bg-gradien-stretch
         bg-clip-text text-transparent
@@ -224,10 +224,10 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       </div>
 
       {/* Control Buttons */}
-      <div className="flex gap-6 justify-center mt-6">
+      <div className="control-buttons flex gap-6 justify-center mt-6">
         <button
           onClick={() => setIsActive(!isActive)}
-          className={`px-8 py-4 rounded-xl text-white transition-all duration-300 ${
+          className={`control-button px-8 py-4 rounded-xl text-white transition-all duration-300 ${
             isActive 
               ? 'bg-red-500/30 backdrop-blur-lg border-2 border-red-300/50 shadow-lg' 
               : 'bg-emerald-500/30 backdrop-blur-lg border-2 border-emerald-300/50 shadow-lg hover:bg-emerald-500/40'
@@ -238,7 +238,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         
         <button
           onClick={() => setShowResetOptions(true)}
-          className="px-8 py-4 bg-white/10 backdrop-blur-sm rounded-xl text-white 
+          className="control-button px-8 py-4 bg-white/10 backdrop-blur-sm rounded-xl text-white 
             border-2 border-transparent hover:bg-white/20 transition-all
             hover:border-white/30 shadow-md"
         >

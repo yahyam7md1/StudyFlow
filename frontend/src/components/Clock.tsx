@@ -26,9 +26,9 @@ const Clock = () => {
   });
 
   return (
-    <div className="fixed top-4 left-4 text-white/80 backdrop-blur-sm bg-white/10 rounded-lg p-4 shadow-md">
-      <div className="text-2xl font-mono font-medium">{formattedTime}</div>
-      <div className="text-sm mt-1">{formattedDate}</div>
+    <div className="clock-container">
+      <div className="clock-time">{formattedTime}</div>
+      <div className="clock-date">{formattedDate}</div>
     </div>
   );
 };

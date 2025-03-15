@@ -33,13 +33,13 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-4 justify-center">
+    <div className="audio-controls">
+      <div className="audio-buttons">
         {(Object.keys(sounds) as SoundType[]).map((sound) => (
           <button
             key={sound}
             onClick={() => handleSoundChange(sound)}
-            className={`px-4 py-2 rounded-lg ${
+            className={`audio-button ${
               selectedSound === sound
                 ? 'bg-blue-500/5 backdrop-blur-lg border-2 border-blue-300/50 shadow-lg'
                 : 'bg-white/10 backdrop-blur-sm hover:bg-white/20 border-2 border-transparent'
@@ -61,32 +61,32 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
         </button>
 
         <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-full pl-4 pr-3 py-2">
-    <span className="text-sm text-white/80">🔊</span>
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.1"
-      value={volume}
-      onChange={(e) => setVolume(parseFloat(e.target.value))}
-      className="w-32 h-2 bg-white/20 rounded-full appearance-none 
-               [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
-               [&::-webkit-slider-thumb]:appearance-none
-               [&::-webkit-slider-thumb]:bg-white
-               [&::-webkit-slider-thumb]:rounded-full
-               [&::-webkit-slider-thumb]:shadow-lg
-               [&::-webkit-slider-thumb]:transition-all
-               [&::-webkit-slider-thumb]:hover:scale-125
-               [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4
-               [&::-moz-range-thumb]:bg-white
-               [&::-moz-range-thumb]:rounded-full
-               [&::-moz-range-thumb]:border-none"
-    />
-    <span className="text-sm font-medium w-8 text-white/90">
-      {(volume * 100).toFixed(0)}%
-    </span>
-  </div>
-    </div>
+          <span className="text-sm text-white/80">🔊</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={volume}
+            onChange={(e) => setVolume(parseFloat(e.target.value))}
+            className="w-32 h-2 bg-white/20 rounded-full appearance-none 
+                     [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
+                     [&::-webkit-slider-thumb]:appearance-none
+                     [&::-webkit-slider-thumb]:bg-white
+                     [&::-webkit-slider-thumb]:rounded-full
+                     [&::-webkit-slider-thumb]:shadow-lg
+                     [&::-webkit-slider-thumb]:transition-all
+                     [&::-webkit-slider-thumb]:hover:scale-125
+                     [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4
+                     [&::-moz-range-thumb]:bg-white
+                     [&::-moz-range-thumb]:rounded-full
+                     [&::-moz-range-thumb]:border-none"
+          />
+          <span className="text-sm font-medium w-8 text-white/90">
+            {(volume * 100).toFixed(0)}%
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

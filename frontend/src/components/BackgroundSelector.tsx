@@ -71,7 +71,7 @@ export default function BackgroundSelector({ currentBackground, onSelect }: Prop
             animate="visible"
             exit="exit"
             variants={containerVariants}
-            className="mt-2 p-4 bg-black/90 backdrop-blur-sm rounded-xl shadow-xl"
+            className="bg-selector-container"
           >
             <div className="flex items-center justify-between mb-4">
               <motion.h3
@@ -92,7 +92,7 @@ export default function BackgroundSelector({ currentBackground, onSelect }: Prop
               </motion.button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="bg-selector-grid">
               {backgrounds.map((bg) => (
                 <motion.div
                   key={bg}
@@ -104,11 +104,11 @@ export default function BackgroundSelector({ currentBackground, onSelect }: Prop
                       onSelect(bg);
                       setIsOpen(false);
                     }}
-                    className={`relative h-20 w-32 rounded-lg overflow-hidden border-2 ${
+                    className={`bg-preview ${
                       currentBackground === bg 
                         ? 'border-blue-500' 
                         : 'border-transparent hover:border-white/30'
-                    } transition-all`}
+                    }`}
                   >
                     <img
                       src={bg}
