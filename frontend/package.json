@@ -1,13 +1,17 @@
 {
+  
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://yahyam7md1.github.io/StudyFlow",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "-": "^0.0.1",
@@ -30,6 +34,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
+    "gh-pages": "^6.1.2",
     "globals": "^15.14.0",
     "tailwindcss": "^3.3.5",
     "typescript": "~5.6.2",
