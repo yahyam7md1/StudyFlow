@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const backgrounds = [
-  './backgrounds/default-1.jpg',
-  './backgrounds/default-2.jpg',
-  './backgrounds/default-3.jpg',
-  './backgrounds/default-4.jpg'
+  'https://yahyam7md1.github.io/StudyFlow/backgrounds/default-1.jpg',
+  'https://yahyam7md1.github.io/StudyFlow/backgrounds/default-2.jpg',
+  'https://yahyam7md1.github.io/StudyFlow/backgrounds/default-3.jpg',
+  'https://yahyam7md1.github.io/StudyFlow/backgrounds/default-4.jpg'
 ];
 
 type Props = {
