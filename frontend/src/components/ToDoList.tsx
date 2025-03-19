@@ -15,7 +15,7 @@ const TodoList = () => {
   const [showTodo, setShowTodo] = useState(false);
 
   const addTask = () => {
-    if (inputValue.trim()) {
+    if (inputValue.trim()) { 
       setTasks([...tasks, {
         id: Math.random().toString(),
         text: inputValue,

@@ -7,13 +7,14 @@ import { SoundType } from './utils/audio'; // Add this import
 import Clock from './components/Clock';
 import Onboarding from './components/Onboarding';
 import ToDoList from './components/ToDoList';
+import VersionHistory from './components/VersionHistory';
 
 export default function App() {
   // Add explicit type declaration for SoundType
   const [selectedSound, setSelectedSound] = useState<SoundType>('rain');
   const [background, setBackground] = useState(getSavedBackground());
   const [showOnboarding, setShowOnboarding] = useState(true);
-
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
 
   const handleBackgroundChange = (bg: string) => {
     setBackground(bg);
@@ -31,6 +32,19 @@ export default function App() {
       
       <div className="absolute inset-0 backdrop-blur-sm backdrop-overlay" />
       <Clock />
+      
+      {/* Version indicator */}
+      <div 
+        onClick={() => setShowVersionHistory(true)}
+        className="version-indicator"
+      >
+        v1.0.0
+      </div>
+      
+      {showVersionHistory && (
+        <VersionHistory onClose={() => setShowVersionHistory(false)} />
+      )}
+      
       {showOnboarding ? (
         <Onboarding onComplete={() => setShowOnboarding(false)} />
       ) : (
