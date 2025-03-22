@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, Trash2, Plus, List } from 'lucide-react';
+import { Check, Trash2, Plus, List, Pencil } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -13,6 +13,8 @@ const TodoList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [showTodo, setShowTodo] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   const addTask = () => {
     if (inputValue.trim()) { 
@@ -38,6 +40,26 @@ const TodoList = () => {
 
   const clearAllTasks = () => {
     setTasks([]);
+  };
+
+  const startEditing = (task: Task) => {
+    setEditingTaskId(task.id);
+    setEditValue(task.text);
+  };
+
+  const saveEdit = () => {
+    if (editValue.trim() && editingTaskId) {
+      setTasks(tasks.map(task => 
+        task.id === editingTaskId ? { ...task, text: editValue } : task
+      ));
+      setEditingTaskId(null);
+      setEditValue('');
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingTaskId(null);
+    setEditValue('');
   };
 
   return (
@@ -133,18 +155,59 @@ const TodoList = () => {
                         {task.checked && <Check className="text-white w-3 h-3" />}
                       </motion.button>
 
-                      <span className={`flex-1 ${task.checked ? 'text-white/50 line-through' : 'text-white'}`}>
-                        {task.text}
-                      </span>
+                      {editingTaskId === task.id ? (
+                        <div className="flex-1 flex gap-1">
+                          <input
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                            className="flex-1 bg-white/10 rounded px-2 py-1 text-white 
+                                    outline-none border border-blue-400/30"
+                            autoFocus
+                          />
+                          <motion.button
+                            onClick={saveEdit}
+                            className="px-2 text-green-400 hover:text-green-300"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            Save
+                          </motion.button>
+                          <motion.button
+                            onClick={cancelEdit}
+                            className="px-0 text-red-400 hover:text-red-300"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            Cancel
+                          </motion.button>
+                        </div>
+                      ) : (
+                        <span className={`flex-1 ${task.checked ? 'text-white/50 line-through' : 'text-white'}`}>
+                          {task.text}
+                        </span>
+                      )}
 
-                      <motion.button
-                        onClick={() => deleteTask(task.id)}
-                        className="text-red-400/50 hover:text-red-400 transition-colors"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Trash2 size={18} />
-                      </motion.button>
+                      {editingTaskId !== task.id && (
+                        <>
+                          <motion.button
+                            onClick={() => startEditing(task)}
+                            className="text-blue-400/50 hover:text-blue-400 transition-colors"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <Pencil size={18} />
+                          </motion.button>
+                          <motion.button
+                            onClick={() => deleteTask(task.id)}
+                            className="text-red-400/50 hover:text-red-400 transition-colors"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <Trash2 size={18} />
+                          </motion.button>
+                        </>
+                      )}
                     </motion.div>
                   ))}
                 </AnimatePresence>
