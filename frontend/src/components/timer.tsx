@@ -66,6 +66,37 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     setShowResetOptions(false);
   }, [isStudyTime, currentSession, sessions, breakMins, studyMins, startLongBreak]);
 
+  const goToPreviousSession = useCallback(() => {
+    // If in long break, go back to last study session
+    if (isLongBreak) {
+      setIsLongBreak(false);
+      setIsStudyTime(true);
+      setCurrentSession(sessions);
+      setTimeLeft(studyMins * 60);
+    } 
+    // If in first session and study time, can't go back further
+    else if (currentSession === 1 && isStudyTime) {
+      return;
+    } 
+    // If in break time of session 1, go back to study time of session 1
+    else if (currentSession === 1 && !isStudyTime) {
+      setIsStudyTime(true);
+      setTimeLeft(studyMins * 60);
+    } 
+    // If in study time of session > 1, go back to break time of previous session
+    else if (isStudyTime && currentSession > 1) {
+      setIsStudyTime(false);
+      setCurrentSession(prev => prev - 1);
+      setTimeLeft(breakMins * 60);
+    } 
+    // If in break time of session > 1, go back to study time of current session
+    else if (!isStudyTime && currentSession > 1) {
+      setIsStudyTime(true);
+      setTimeLeft(studyMins * 60);
+    }
+    setShowResetOptions(false);
+  }, [isStudyTime, currentSession, sessions, breakMins, studyMins, isLongBreak]);
+
   useEffect(() => {
     let interval: number;
     
@@ -300,6 +331,26 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
                 : (currentSession < sessions ? `Break → Session ${currentSession + 1}` : `Break → Long Break`)}
             </span>
           </motion.button>
+
+          {/* Only show Go Back button if we're in a break or past session 1 */}
+          {(!isStudyTime || currentSession > 1 || isLongBreak) && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={goToPreviousSession}
+              className="w-full px-6 py-3 bg-gradient-to-r from-green-500/90 to-teal-500/90 rounded-lg text-white
+                hover:from-green-600 hover:to-teal-600 transition-all font-semibold shadow-lg"
+            >
+              Go Back to Previous
+              <span className="block text-sm text-white/70 mt-1">
+                {isLongBreak 
+                  ? `Long Break → Session ${sessions}` 
+                  : isStudyTime
+                    ? (currentSession > 1 ? `Focus → Session ${currentSession - 1} Break` : 'At first session')
+                    : `Break → Session ${currentSession} Focus`}
+              </span>
+            </motion.button>
+          )}
 
           <motion.button
             whileHover={{ scale: 1.02 }}
