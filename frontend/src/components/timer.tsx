@@ -138,6 +138,32 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Add functions to handle time adjustments
+  const addTwoMinutes = () => {
+    
+    const currentMins = Math.floor(timeLeft / 60);
+    const maxMins = isStudyTime ? studyMins : (isLongBreak ? 30 : breakMins);
+    
+    // Calculate how many minutes we can add without exceeding the maximum
+    const minutesToAdd = Math.min(2, maxMins - currentMins);
+    
+    if (minutesToAdd > 0) {
+      setTimeLeft((currentMins + minutesToAdd) * 60);
+    }
+  };
+
+  const subtractTwoMinutes = () => {
+    
+    const currentMins = Math.floor(timeLeft / 60);
+    
+    // Calculate how many minutes we can subtract without going below 0
+    const minutesToSubtract = Math.min(2, currentMins);
+    
+    if (minutesToSubtract > 0) {
+      setTimeLeft((currentMins - minutesToSubtract) * 60);
+    }
+  };
+
   const longBreakVariants = {
     hidden: { opacity: 0, y: 50, scale: 0.95 },
     visible: { 
@@ -231,13 +257,31 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
 
   return (
     <div className="text-center space-y-6 relative">
-      {/* Timer Display */}
-      <div className="timer-display text-8xl font-bold bg-gradient-to-r 
-        from-purple-400 via-pink-300 to-blue-400 
-        animate-gradient bg-gradien-stretch
-        bg-clip-text text-transparent
-        drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
-        {formatTime(timeLeft)}
+      {/* Timer Display with Plus/Minus Controls */}
+      <div className="flex items-center justify-center gap-4">
+        <button
+          onClick={subtractTwoMinutes}
+          className={`text-4xl font-bold text-white/80 hover:text-white transition-all hover:scale-110
+            `}
+        >
+          -
+        </button>
+        
+        <div className="timer-display text-8xl font-bold bg-gradient-to-r 
+          from-purple-400 via-pink-300 to-blue-400 
+          animate-gradient bg-gradien-stretch
+          bg-clip-text text-transparent
+          drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+          {formatTime(timeLeft)}
+        </div>
+        
+        <button
+          onClick={addTwoMinutes}
+          className={`text-4xl font-bold text-white/80 hover:text-white transition-all
+            hover:scale-110`}
+        >
+          +
+        </button>
       </div>
 
       {/* Session Indicator */}
