@@ -225,23 +225,53 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
               variants={childVariants}
               className="text-7xl font-mono text-white/90 mb-6"
             >
-              {formatTime(timeLeft)}
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={subtractTwoMinutes}
+                  className="text-4xl font-bold text-white/80 hover:text-white transition-all hover:scale-110"
+                >
+                  -
+                </button>
+                {formatTime(timeLeft)}
+                <button
+                  onClick={addTwoMinutes}
+                  className="text-4xl font-bold text-white/80 hover:text-white transition-all hover:scale-110"
+                >
+                  +
+                </button>
+              </div>
               {timeLeft === 0 && playSessionEndAlert()}
             </motion.div>
             
-            <motion.button
-              variants={childVariants}
-              onClick={() => {
-                playSessionEndAlert();
-                resetEverything();
-              }}
-              className="px-6 py-3 bg-white/20 rounded-lg text-white
-                hover:bg-white/30 transition-all shadow-md"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              ⏹️ End Break Early
-            </motion.button>
+            <div className="space-y-4">
+              <motion.button
+                variants={childVariants}
+                onClick={() => {
+                  playSessionEndAlert();
+                  resetEverything();
+                }}
+                className="px-6 py-3 bg-white/20 rounded-lg text-white
+                  hover:bg-white/30 transition-all shadow-md w-full"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                ⏹️ End Break Early
+              </motion.button>
+
+              <motion.button
+                variants={childVariants}
+                onClick={() => setIsActive(!isActive)}
+                className={`px-6 py-3 rounded-lg text-white transition-all shadow-md w-full ${
+                  isActive 
+                    ? 'bg-red-500/30 backdrop-blur-lg border-2 border-red-300/50' 
+                    : 'bg-emerald-500/30 backdrop-blur-lg border-2 border-emerald-300/50 hover:bg-emerald-500/40'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isActive ? '⏸️ Pause' : '▶️ Start'}
+              </motion.button>
+            </div>
             
             <motion.p 
               variants={childVariants}
