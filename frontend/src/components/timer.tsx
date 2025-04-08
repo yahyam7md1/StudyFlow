@@ -48,6 +48,13 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         // Otherwise, skip from study to break time as usual
         playSessionEndAlert();
         setIsStudyTime(false);
+        // Add a small timeout to ensure state updates are processed
+        setTimeout(() => {
+          // Force set the time to break minutes to prevent UI inconsistency
+          if (!isStudyTime) {
+            setTimeLeft(breakMins * 60);
+          }
+        }, 50);
         setTimeLeft(breakMins * 60);
       }
     } else {
@@ -60,10 +67,21 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         // Go to the next study session
         setIsStudyTime(true);
         setCurrentSession(prev => prev + 1);
+        // Add a small timeout to ensure state updates are processed
+        setTimeout(() => {
+          // Force set the time to study minutes to prevent UI inconsistency
+          if (isStudyTime) {
+            setTimeLeft(studyMins * 60);
+          }
+        }, 50);
         setTimeLeft(studyMins * 60);
       }
     }
-    setShowResetOptions(false);
+    // Add a small delay before allowing the reset options to close
+    // to ensure state updates are completed
+    setTimeout(() => {
+      setShowResetOptions(false);
+    }, 50);
   }, [isStudyTime, currentSession, sessions, breakMins, studyMins, startLongBreak]);
 
   const goToPreviousSession = useCallback(() => {
@@ -72,6 +90,13 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       setIsLongBreak(false);
       setIsStudyTime(true);
       setCurrentSession(sessions);
+      // Add a small timeout to ensure state updates are processed
+      setTimeout(() => {
+        // Force set the time to study minutes to prevent UI inconsistency
+        if (isStudyTime && !isLongBreak) {
+          setTimeLeft(studyMins * 60);
+        }
+      }, 50);
       setTimeLeft(studyMins * 60);
     } 
     // If in first session and study time, can't go back further
@@ -81,20 +106,45 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     // If in break time of session 1, go back to study time of session 1
     else if (currentSession === 1 && !isStudyTime) {
       setIsStudyTime(true);
+      // Add a small timeout to ensure state updates are processed
+      setTimeout(() => {
+        // Force set the time to study minutes to prevent UI inconsistency
+        if (isStudyTime) {
+          setTimeLeft(studyMins * 60);
+        }
+      }, 50);
       setTimeLeft(studyMins * 60);
     } 
     // If in study time of session > 1, go back to break time of previous session
     else if (isStudyTime && currentSession > 1) {
       setIsStudyTime(false);
       setCurrentSession(prev => prev - 1);
+      // Add a small timeout to ensure state updates are processed
+      setTimeout(() => {
+        // Force set the time to break minutes to prevent UI inconsistency
+        if (!isStudyTime) {
+          setTimeLeft(breakMins * 60);
+        }
+      }, 50);
       setTimeLeft(breakMins * 60);
     } 
     // If in break time of session > 1, go back to study time of current session
     else if (!isStudyTime && currentSession > 1) {
       setIsStudyTime(true);
+      // Add a small timeout to ensure state updates are processed
+      setTimeout(() => {
+        // Force set the time to study minutes to prevent UI inconsistency
+        if (isStudyTime) {
+          setTimeLeft(studyMins * 60);
+        }
+      }, 50);
       setTimeLeft(studyMins * 60);
     }
-    setShowResetOptions(false);
+    // Add a small delay before allowing the reset options to close
+    // to ensure state updates are completed
+    setTimeout(() => {
+      setShowResetOptions(false);
+    }, 50);
   }, [isStudyTime, currentSession, sessions, breakMins, studyMins, isLongBreak]);
 
   useEffect(() => {
