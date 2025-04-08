@@ -14,12 +14,14 @@ type Props = {
 
 export default function AudioControls({ selectedSound, onSoundChange }: Props) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(50);
+  const [isMuted, setIsMuted] = useState(false);
+  const [previousVolume, setPreviousVolume] = useState(50);
 
   // Critical fix: Add useEffect for volume control
   useEffect(() => {
-    audioControls.setVolume(volume);
-  }, [volume]);
+    audioControls.setVolume(isMuted ? 0 : volume / 100);
+  }, [volume, isMuted]);
 
   const handlePlayToggle = () => {
     audioControls.playPause(selectedSound);
@@ -30,6 +32,17 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
     audioControls.stop();
     onSoundChange(sound);
     setIsPlaying(false);
+  };
+
+  const toggleMute = () => {
+    if (isMuted) {
+      // Unmute - restore previous volume
+      setIsMuted(false);
+    } else {
+      // Mute - save current volume and set to 0
+      setPreviousVolume(volume);
+      setIsMuted(true);
+    }
   };
 
   return (
@@ -61,14 +74,25 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
         </button>
 
         <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-full pl-4 pr-3 py-2">
-          <span className="text-sm text-white/80">🔊</span>
+          <span 
+            className="text-sm text-white/80 cursor-pointer hover:text-white transition-colors"
+            onClick={toggleMute}
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </span>
           <input
             type="range"
             min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
+            max="100"
+            step="1"
+            value={isMuted ? 0 : volume}
+            onChange={(e) => {
+              const newVolume = parseInt(e.target.value);
+              setVolume(newVolume);
+              if (isMuted && newVolume > 0) {
+                setIsMuted(false);
+              }
+            }}
             className="w-32 h-2 bg-white/20 rounded-full appearance-none 
                      [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
                      [&::-webkit-slider-thumb]:appearance-none
@@ -83,7 +107,7 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
                      [&::-moz-range-thumb]:border-none"
           />
           <span className="text-sm font-medium w-8 text-white/90">
-            {(volume * 100).toFixed(0)}%
+            {isMuted ? 0 : volume}%
           </span>
         </div>
       </div>
