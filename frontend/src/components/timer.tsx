@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { playBreakEndAlert, playSessionEndAlert } from '../utils/audio';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -15,13 +15,185 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   const [isStudyTime, setIsStudyTime] = useState(true);
   const [isLongBreak, setIsLongBreak] = useState(false);
   const [showResetOptions, setShowResetOptions] = useState(false);
+  
+  // Worker reference
+  const workerRef = useRef<Worker | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const startLongBreak = useCallback(() => {
     setIsLongBreak(true);
-    setTimeLeft(1800);
+    setTimeLeft(1800); // 30 minutes in seconds
     setIsStudyTime(false);
     setIsActive(true);
+    
+    // Start the timer in the worker
+    if (workerRef.current) {
+      workerRef.current.postMessage({ 
+        type: 'start', 
+        timeLeft: 1800 
+      });
+    }
   }, []);
+
+  // Function to handle timer completion
+  const handleTimerComplete = useCallback(() => {
+    // First, stop any existing timer
+    if (workerRef.current) {
+      workerRef.current.postMessage({ type: 'stop' });
+    }
+    setIsActive(false);
+
+    if (isLongBreak) {
+      // When long break completes, reset everything and start from the beginning
+      setIsLongBreak(false);
+      setIsStudyTime(true);
+      setCurrentSession(1);
+      setTimeLeft(studyMins * 60);
+      
+      // Play a notification sound to alert the user
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+      playSessionEndAlert();
+      
+      // Don't automatically start the timer, let user start it manually
+      return;
+    }
+
+    if (isStudyTime) {
+      // If this is the last session, go directly to long break
+      if (currentSession >= sessions) {
+        if (audioContextRef.current?.state === 'suspended') {
+          audioContextRef.current.resume();
+        }
+        playSessionEndAlert();
+        startLongBreak();
+        return;
+      } else {
+        // For non-last sessions, play alert and go to break
+        if (audioContextRef.current?.state === 'suspended') {
+          audioContextRef.current.resume();
+        }
+        playSessionEndAlert();
+        setIsStudyTime(false);
+        setTimeLeft(breakMins * 60);
+        
+        // Start the break timer
+        if (workerRef.current) {
+          workerRef.current.postMessage({ 
+            type: 'start', 
+            timeLeft: breakMins * 60 
+          });
+        }
+        setIsActive(true);
+      }
+    } else {
+      // Break time is over, go to next study session
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+      playBreakEndAlert();
+      setIsStudyTime(true);
+      setCurrentSession(prev => prev + 1);
+      setTimeLeft(studyMins * 60);
+      
+      // Start the next focus session timer
+      if (workerRef.current) {
+        workerRef.current.postMessage({ 
+          type: 'start', 
+          timeLeft: studyMins * 60 
+        });
+      }
+      setIsActive(true);
+    }
+  }, [isStudyTime, currentSession, sessions, isLongBreak, startLongBreak, breakMins, studyMins]);
+
+  // Initialize audio context and worker
+  useEffect(() => {
+    // Create audio context
+    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume audio context on user interaction
+    const resumeAudioContext = () => {
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+    };
+    
+    // Add event listeners for user interaction
+    document.addEventListener('click', resumeAudioContext);
+    document.addEventListener('keydown', resumeAudioContext);
+    document.addEventListener('touchstart', resumeAudioContext);
+    
+    // Create the worker
+    workerRef.current = new Worker(new URL('../utils/timerWorker.ts', import.meta.url), { type: 'module' });
+    
+    // Set up worker message handler
+    workerRef.current.onmessage = (e) => {
+      const { type, remainingTime } = e.data;
+      
+      if (type === 'tick') {
+        setTimeLeft(remainingTime);
+      } else if (type === 'complete') {
+        // Stop the current timer
+        if (workerRef.current) {
+          workerRef.current.postMessage({ type: 'stop' });
+        }
+        setIsActive(false);
+        
+        // Then handle the completion
+        handleTimerComplete();
+      }
+    };
+    
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (workerRef.current) {
+        workerRef.current.terminate();
+      }
+      document.removeEventListener('click', resumeAudioContext);
+      document.removeEventListener('keydown', resumeAudioContext);
+      document.removeEventListener('touchstart', resumeAudioContext);
+    };
+  }, [handleTimerComplete]);
+
+  // Handle timer start/stop/pause
+  useEffect(() => {
+    if (!workerRef.current) return;
+    
+    if (isActive && timeLeft > 0) {
+      // Start the timer in the worker
+      workerRef.current.postMessage({ 
+        type: 'start', 
+        timeLeft 
+      });
+    } else if (!isActive) {
+      // Pause the timer in the worker
+      workerRef.current.postMessage({ 
+        type: 'pause' 
+      });
+    }
+    
+    return () => {
+      // Clean up when component unmounts
+      if (workerRef.current) {
+        workerRef.current.postMessage({ type: 'stop' });
+      }
+    };
+  }, [isActive, timeLeft]);
+
+  // Handle timeLeft changes
+  useEffect(() => {
+    if (isActive && workerRef.current) {
+      // Update the timer in the worker when timeLeft changes
+      workerRef.current.postMessage({ 
+        type: 'resume', 
+        timeLeft 
+      });
+    }
+  }, [timeLeft, isActive]);
 
   const resetCurrentSession = useCallback(() => {
     setIsActive(false);
@@ -114,7 +286,7 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         }
       }, 50);
       setTimeLeft(studyMins * 60);
-    } 
+    }
     // If in study time of session > 1, go back to break time of previous session
     else if (isStudyTime && currentSession > 1) {
       setIsStudyTime(false);
@@ -146,41 +318,6 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       setShowResetOptions(false);
     }, 50);
   }, [isStudyTime, currentSession, sessions, breakMins, studyMins, isLongBreak]);
-
-  useEffect(() => {
-    let interval: number;
-    
-    if (isActive && timeLeft > 0) {
-      interval = window.setInterval(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      if (isLongBreak) {
-        window.location.reload();
-        return;
-      }
-
-      if (isStudyTime) {
-        if (currentSession < sessions) playSessionEndAlert();
-        
-        if (currentSession >= sessions) {
-          playSessionEndAlert();
-          startLongBreak();
-          return;
-        }
-
-        setIsStudyTime(false);
-        setTimeLeft(breakMins * 60);
-      } else {
-        playBreakEndAlert();
-        setIsStudyTime(true);
-        setCurrentSession(prev => prev + 1);
-        setTimeLeft(studyMins * 60);
-      }
-    }
-
-    return () => window.clearInterval(interval);
-  }, [isActive, timeLeft, isStudyTime, currentSession, sessions, isLongBreak, startLongBreak, breakMins, studyMins]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
