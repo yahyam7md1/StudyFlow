@@ -20,6 +20,9 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
   const workerRef = useRef<Worker | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
+  // Add wake lock reference
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
   const startLongBreak = useCallback(() => {
     setIsLongBreak(true);
     setTimeLeft(1800); // 30 minutes in seconds
@@ -32,6 +35,35 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
         type: 'start', 
         timeLeft: 1800 
       });
+    }
+  }, []);
+
+  // Function to request wake lock
+  const requestWakeLock = useCallback(async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        
+        // Add event listener for when the wake lock is released
+        wakeLockRef.current.addEventListener('release', () => {
+          console.log('Wake Lock was released');
+        });
+      }
+    } catch (err) {
+      console.error('Error requesting wake lock:', err);
+    }
+  }, []);
+
+  // Function to release wake lock
+  const releaseWakeLock = useCallback(() => {
+    if (wakeLockRef.current) {
+      wakeLockRef.current.release()
+        .then(() => {
+          wakeLockRef.current = null;
+        })
+        .catch((err) => {
+          console.error('Error releasing wake lock:', err);
+        });
     }
   }, []);
 
@@ -107,6 +139,20 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
       setIsActive(true);
     }
   }, [isStudyTime, currentSession, sessions, isLongBreak, startLongBreak, breakMins, studyMins]);
+
+  // Request wake lock when timer is active
+  useEffect(() => {
+    if (isActive) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    
+    // Clean up wake lock when component unmounts
+    return () => {
+      releaseWakeLock();
+    };
+  }, [isActive, requestWakeLock, releaseWakeLock]);
 
   // Initialize audio context and worker
   useEffect(() => {
