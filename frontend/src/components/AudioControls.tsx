@@ -38,6 +38,7 @@ export default function AudioControls({ selectedSound, onSoundChange }: Props) {
     if (isMuted) {
       // Unmute - restore previous volume
       setIsMuted(false);
+      setVolume(previousVolume);
     } else {
       // Mute - save current volume and set to 0
       setPreviousVolume(volume);
