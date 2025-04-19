@@ -140,19 +140,15 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
     }
   }, [isStudyTime, currentSession, sessions, isLongBreak, startLongBreak, breakMins, studyMins]);
 
-  // Request wake lock when timer is active
+  // Request wake lock when component mounts
   useEffect(() => {
-    if (isActive) {
-      requestWakeLock();
-    } else {
-      releaseWakeLock();
-    }
+    requestWakeLock();
     
     // Clean up wake lock when component unmounts
     return () => {
       releaseWakeLock();
     };
-  }, [isActive, requestWakeLock, releaseWakeLock]);
+  }, [requestWakeLock, releaseWakeLock]);
 
   // Initialize audio context and worker
   useEffect(() => {
