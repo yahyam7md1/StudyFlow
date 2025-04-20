@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { playBreakEndAlert, playSessionEndAlert } from '../utils/audio';
 import { AnimatePresence, motion } from 'framer-motion';
+import ProgressBar from './ProgressBar';
 
 type TimerProps = {
   studyMins?: number;
@@ -469,6 +470,12 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
                   +
                 </button>
               </div>
+              <ProgressBar
+                currentTime={timeLeft}
+                totalTime={1800} // 30 minutes in seconds
+                isActive={isActive}
+                isStudyTime={false}
+              />
               {timeLeft === 0 && playSessionEndAlert()}
             </motion.div>
             
@@ -532,6 +539,12 @@ const Timer = ({ studyMins = 25, breakMins = 5, sessions = 4 }: TimerProps) => {
           bg-clip-text text-transparent
           drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
           {formatTime(timeLeft)}
+          <ProgressBar
+            currentTime={timeLeft}
+            totalTime={isStudyTime ? studyMins * 60 : breakMins * 60}
+            isActive={isActive}
+            isStudyTime={isStudyTime}
+          />
         </div>
         
         <button
